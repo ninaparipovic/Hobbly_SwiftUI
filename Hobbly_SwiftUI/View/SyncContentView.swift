@@ -32,7 +32,9 @@ struct SyncContentView: View {
                     // one Category per user partition, but you could expand it to allow many Categorys.
                     if realm.objects(Category.self).count == 0 {
                         try! realm.write {
-                            realm.add(Category())
+                            realm.add(Category(name: "new cat!"))
+                            realm.add(Category(name: "new cattt!"))
+
                         }
                     }
                     // Assign the realm to the state property to trigger a view refresh.
@@ -41,7 +43,7 @@ struct SyncContentView: View {
         }
         // If logged in and the realm has been opened, then go to the Activitys
         // screen for the only Category in the realm.
-        return AnyView(ActivitysView(category: realm.objects(Category.self).first!,
+        return AnyView(ActivitysView(category: realm.objects(Category.self).first!, categories: realm.objects(Category.self),
                                  leadingBarButton: AnyView(LogoutButton(app: app))))
         // Pass the app to descendents via this environment object.
     }
@@ -51,6 +53,11 @@ struct ActivitysView: View {
     /// The Category is a container for a list of Activitys. Using a Category instead of all Activitys
     /// directly allows us to maintain a list order that can be updated in the UI.
     @ObservedRealmObject var category: Category
+    var categories: Results<Category>
+    var categoriesArray: [Category] {
+      categories.map(Category.init)
+    }
+    
     /// The button to be displayed on the top left.
     var leadingBarButton: AnyView?
     let tabBarImageNames = ["house.fill", "person.2.fill", "plus.circle", "magnifyingglass", "person.fill"]
@@ -91,18 +98,31 @@ struct ActivitysView: View {
                     switch selectedIndex {
                     case 0:
                         NavigationView {
-                            List {
-                                ForEach(category.Activitys) { Activity in
-                                    ActivityCell(activity: Activity)
-                                }.onDelete(perform: $category.Activitys.remove)
-                                .onMove(perform: $category.Activitys.move)
-                            }.listStyle(GroupedListStyle())
-                                .navigationBarTitle("Activitys", displayMode: .large)
-                                .navigationBarBackButtonHidden(true)
-                                .navigationBarItems(
-                                    leading: self.leadingBarButton,
-                                    // Edit button on the right to enable rearranging Activitys
+                            VStack {
+                                List {
+                                    ForEach(categoriesArray) { category in
+                                        Text(category.name)
+                                    }
+//                                    for category in categoriesArray {
+//                                       NavigationLink(destination: Text("hello")) {
+//                                             Text("new category")
+//                                       }
+//                                    }
+                                }
+                                
+                                List {
+                                    ForEach(category.Activitys) { Activity in
+                                        ActivityCell(activity: Activity)
+                                    }.onDelete(perform: $category.Activitys.remove)
+                                    .onMove(perform: $category.Activitys.move)
+                                }.listStyle(GroupedListStyle())
+                                    .navigationBarTitle("Activitys", displayMode: .large)
+                                    .navigationBarBackButtonHidden(true)
+                                    .navigationBarItems(
+                                        leading: self.leadingBarButton,
+                                        // Edit button on the right to enable rearranging Activitys
                                     trailing: EditButton())
+                            }
                         }
                     case 1:
                         NavigationView {

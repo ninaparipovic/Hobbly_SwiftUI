@@ -39,6 +39,8 @@ final class Activity: Object, ObjectKeyIdentifiable {
 final class Category: Object, ObjectKeyIdentifiable {
     /// The unique ID of the Category.
     @objc dynamic var _id = ObjectId.generate()
+    @objc dynamic var name = "yeeeh"
+
 
     /// The collection of Activitys in this Category.
     var Activitys = RealmSwift.List<Activity>()
@@ -46,6 +48,11 @@ final class Category: Object, ObjectKeyIdentifiable {
     /// Declares the _id member as the primary key to the realm.
     override class func primaryKey() -> String? {
         "_id"
+    }
+    
+    convenience init(name: String) {
+        self.init()
+        self.name = name
     }
 }
 
