@@ -68,6 +68,8 @@ struct ActivitysView: View {
     @State var addModal = false
 
     @State var selectedIndex = 0
+    var colors = ["Red", "Green", "Blue", "Tartan"]
+    @State private var selectedColor = "Red"
 
     var body: some View {
             VStack {
@@ -75,14 +77,23 @@ struct ActivitysView: View {
                     Spacer()
                         .fullScreenCover(isPresented: $addModal, content: {
                             VStack {
+//                                VStack {
+//                                    Text("choose a category")
+//                                    Picker("Please choose a color", selection: $selectedColor) {
+//                                                    ForEach(categoriesArray, id: \.self) {
+//                                                        Text(categoriesArray.name)
+//                                                    }
+//                                                }
+//                                                Text("You selected: \(selectedColor)")
+//
+//                                }
+                                
                                 Section(header: Text("name")) {
                                     TextField("", text: $ActivityName)
                                 }
                                 Section(header: Text("price")) {
                                     TextField("", text: $ActivityPrice)
                                 }
-                                
-                                // here
                                 Button(action: {
                                     // The bound collection automatically
                                     // handles write transactions, so we can
@@ -102,20 +113,11 @@ struct ActivitysView: View {
                                 List {
                                     ForEach(categoriesArray) { category in
                                         Text(category.name)
+                                        ForEach(category.Activitys) { Activity in
+                                            ActivityCell(activity: Activity)
+                                        }
                                     }
-//                                    for category in categoriesArray {
-//                                       NavigationLink(destination: Text("hello")) {
-//                                             Text("new category")
-//                                       }
-//                                    }
                                 }
-                                
-                                List {
-                                    ForEach(category.Activitys) { Activity in
-                                        ActivityCell(activity: Activity)
-                                    }.onDelete(perform: $category.Activitys.remove)
-                                    .onMove(perform: $category.Activitys.move)
-                                }.listStyle(GroupedListStyle())
                                     .navigationBarTitle("Activitys", displayMode: .large)
                                     .navigationBarBackButtonHidden(true)
                                     .navigationBarItems(
@@ -237,8 +239,9 @@ struct ActivityCell: View {
             Image("kaf1")
                 .resizable()
                 .frame(width: 80.0, height: 80.0)
-            Text("\(activity.name)")
-
+            VStack {
+                Text(activity.name)
+            }
         }
     }
 }
