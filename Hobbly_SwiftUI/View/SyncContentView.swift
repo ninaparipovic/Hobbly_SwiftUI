@@ -66,6 +66,15 @@ struct ActivitysView: View {
     @State private var ActivityName = ""
     @State private var ActivityPrice = ""
     @State var addModal = false
+    
+    @State private var selectedCategoryIndex = 0
+    
+//    @ObservedRealmObject var SelectedCategory = categoriesArray[selectedCategoryIndex]
+    
+    
+    var selectedCategory: String {
+        categoriesArray[0].name
+    }
 
     @State var selectedIndex = 0
     var colors = ["Red", "Green", "Blue", "Tartan"]
@@ -77,16 +86,17 @@ struct ActivitysView: View {
                     Spacer()
                         .fullScreenCover(isPresented: $addModal, content: {
                             VStack {
-//                                VStack {
-//                                    Text("choose a category")
-//                                    Picker("Please choose a color", selection: $selectedColor) {
-//                                                    ForEach(categoriesArray, id: \.self) {
-//                                                        Text(categoriesArray.name)
-//                                                    }
-//                                                }
-//                                                Text("You selected: \(selectedColor)")
-//
-//                                }
+
+                                VStack {
+                                    Text("choose a category")
+                                    Picker("Please choose a color", selection: $selectedCategoryIndex) {
+                                        ForEach(0..<categoriesArray.count) { index in
+                                                        Text(categoriesArray[index].name)
+                                                    }
+                                                }
+                                                Text("You selected: \(categoriesArray[selectedCategoryIndex].name)")
+
+                                }
                                 
                                 Section(header: Text("name")) {
                                     TextField("", text: $ActivityName)
